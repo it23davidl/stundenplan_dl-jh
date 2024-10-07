@@ -56,6 +56,11 @@ $result = $stmt->get_result();
 </head>
 <body>
  
+<div style="position: absolute; top: 10px; right: 10px;">
+    <a href="logout.php" style="text-decoration: none; color: white; background-color: #4CAF50; padding: 10px; border-radius: 5px;">Logout</a>
+</div>
+
+
 <h1>Stundenplan für <?php echo $_SESSION['username']; ?></h1>
  
 <table>

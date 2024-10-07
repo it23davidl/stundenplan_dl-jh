@@ -8,14 +8,18 @@
 </head>
 <body>
 <div class="login-container">
-<h2>Login</h2>
-<form action="login.php" method="post">
-<label for="email">E-Mail-Adresse:</label><br>
-<input type="email" id="email" name="email" required><br><br>
-<label for="password">Passwort:</label><br>
-<input type="password" id="password" name="password" required><br><br>
-<input type="submit" value="Login">
-</form>
+    <h2>Willkommen bei Ihrem Online-Stundenplan</h2> <!-- Willkommensgruß -->
+    <h2>Login</h2>
+    <form action="login.php" method="post">
+        <label for="email">E-Mail-Adresse:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="password">Passwort:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+</div>
+<div class="footer">
+    Created by Jonas Horst and David Luft
 </div>
 </body>
 </html>

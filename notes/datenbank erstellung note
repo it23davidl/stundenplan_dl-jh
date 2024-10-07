@@ -1,0 +1,123 @@
+Datenbank erstellen:
+CREATE DATABASE stundenplan;
+
+Tabellen erstellen:
+-- Tabelle für Unterrichtsfächer
+CREATE TABLE Unterrichtsfaecher (
+    FachID INT AUTO_INCREMENT PRIMARY KEY,
+    Fachname VARCHAR(50) NOT NULL,
+    Beschreibung TEXT
+);
+
+-- Tabelle für Klassenraum
+CREATE TABLE Klassenraum (
+    KlassenraumID INT AUTO_INCREMENT PRIMARY KEY,
+    Klassenname VARCHAR(50) NOT NULL,
+    RaumNummer VARCHAR(10) NOT NULL,
+    Kapazitaet INT NOT NULL
+);
+
+-- Tabelle für Lehrer
+CREATE TABLE Lehrer (
+    LehrerID INT AUTO_INCREMENT PRIMARY KEY,
+    Vorname VARCHAR(50) NOT NULL,
+    Nachname VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Passwort VARCHAR(255) NOT NULL,  -- Password as a string (hashed)
+    FachID INT,
+    FOREIGN KEY (FachID) REFERENCES Unterrichtsfaecher(FachID) ON DELETE SET NULL
+);
+
+-- Tabelle für Schüler
+CREATE TABLE Schueler (
+    SchuelerID INT AUTO_INCREMENT PRIMARY KEY,
+    Vorname VARCHAR(50) NOT NULL,
+    Nachname VARCHAR(50) NOT NULL,
+    Geburtsdatum DATE,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Passwort VARCHAR(255) NOT NULL,  -- Password as a string (hashed)
+    KlassenraumID INT,
+    FOREIGN KEY (KlassenraumID) REFERENCES Klassenraum(KlassenraumID) ON DELETE SET NULL
+);
+
+-- Tabelle für Kurse
+CREATE TABLE Kurse (
+    KursID INT AUTO_INCREMENT PRIMARY KEY,
+    Kursname VARCHAR(100) NOT NULL,
+    LehrerID INT,
+    KlassenraumID INT,
+    FachID INT,
+    BeginnZeit DATETIME NOT NULL,
+    EndeZeit DATETIME NOT NULL,
+    FOREIGN KEY (LehrerID) REFERENCES Lehrer(LehrerID) ON DELETE SET NULL,
+    FOREIGN KEY (KlassenraumID) REFERENCES Klassenraum(KlassenraumID) ON DELETE SET NULL,
+    FOREIGN KEY (FachID) REFERENCES Unterrichtsfaecher(FachID) ON DELETE SET NULL
+);
+
+-- Verknüpfungstabelle zwischen Schüler und Kurse (Viele-zu-Viele Beziehung)
+CREATE TABLE SchuelerKurse (
+    SchuelerKursID INT AUTO_INCREMENT PRIMARY KEY,
+    SchuelerID INT,
+    KursID INT,
+    FOREIGN KEY (SchuelerID) REFERENCES Schueler(SchuelerID) ON DELETE CASCADE,
+    FOREIGN KEY (KursID) REFERENCES Kurse(KursID) ON DELETE CASCADE
+);
+
+
+Tabellen füllen:
+INSERT INTO Klassenraum (Klassenname, RaumNummer, Kapazitaet) VALUES
+('Klasse 1A', '101', 30),
+('Klasse 1B', '102', 25),
+('Klasse 2A', '201', 30),
+('Klasse 2B', '202', 25),
+('Klasse 3A', '301', 30);
+
+INSERT INTO Unterrichtsfaecher (Fachname, Beschreibung) VALUES
+('Mathematik', 'Grundlagen der Mathematik und Algebra'),
+('Deutsch', 'Sprachunterricht und Literatur'),
+('Englisch', 'Englisch als Fremdsprache'),
+('Biologie', 'Grundlagen der Biologie'),
+('Geschichte', 'Geschichte der Welt und Deutschland');
+
+INSERT INTO Lehrer (Vorname, Nachname, Email, Passwort, FachID) VALUES
+('Peter', 'Schmidt', 'peter.schmidt@example.com', 'passwortx', 1),
+('Anna', 'Mueller', 'anna.mueller@example.com', 'passwortx', 2),
+('John', 'Doe', 'john.doe@example.com', 'passwortx', 3),
+('Susanne', 'Klein', 'susanne.klein@example.com', 'passwortx', 4),
+('Michael', 'Schneider', 'michael.schneider@example.com', 'passwortx', 5);
+
+INSERT INTO Schueler (Vorname, Nachname, Geburtsdatum, Email, Passwort, KlassenraumID) VALUES
+('Max', 'Mustermann', '2010-05-10', 'max.mustermann@example.com', 'passwortx', 1),
+('Julia', 'Musterfrau', '2010-07-22', 'julia.musterfrau@example.com', 'passwortx', 1),
+('Tim', 'Beispiel', '2009-03-14', 'tim.beispiel@example.com', 'passwortx', 2),
+('Laura', 'Test', '2011-09-03', 'laura.test@example.com', 'passwortx', 2),
+('Tom', 'Schulze', '2009-12-01', 'tom.schulze@example.com', 'passwortx', 3),
+('Anna', 'Schmidt', '2010-01-15', 'anna.schmidt@example.com', 'passwortx', 3),
+('Lukas', 'Meier', '2009-08-20', 'lukas.meier@example.com', 'passwortx', 4),
+('Sophie', 'Müller', '2011-06-05', 'sophie.mueller@example.com', 'passwortx', 4),
+('Paul', 'Hansen', '2010-11-30', 'paul.hansen@example.com', 'passwortx', 5),
+('Marie', 'Fischer', '2009-04-17', 'marie.fischer@example.com', 'passwortx', 5);
+
+INSERT INTO Kurse (Kursname, LehrerID, KlassenraumID, FachID, BeginnZeit, EndeZeit) VALUES
+('Mathe 1A', 1, 1, 1, '2024-09-01 08:00:00', '2024-09-01 09:30:00'),
+('Mathe 1B', 1, 2, 1, '2024-09-01 09:45:00', '2024-09-01 11:15:00'),
+('Deutsch 1A', 2, 1, 2, '2024-09-01 11:30:00', '2024-09-01 13:00:00'),
+('Deutsch 1B', 2, 2, 2, '2024-09-01 08:00:00', '2024-09-01 09:30:00'),
+('Englisch 2A', 3, 3, 3, '2024-09-01 09:45:00', '2024-09-01 11:15:00'),
+('Englisch 2B', 3, 4, 3, '2024-09-01 08:00:00', '2024-09-01 09:30:00'),
+('Biologie 2A', 4, 3, 4, '2024-09-01 11:30:00', '2024-09-01 13:00:00'),
+('Biologie 2B', 4, 4, 4, '2024-09-01 08:00:00', '2024-09-01 09:30:00'),
+('Geschichte 3A', 5, 5, 5, '2024-09-01 09:45:00', '2024-09-01 11:15:00'),
+('Geschichte 3B', 5, 5, 5, '2024-09-01 08:00:00', '2024-09-01 09:30:00');
+
+INSERT INTO SchuelerKurse (SchuelerID, KursID) VALUES
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5),
+(2, 1), (2, 2), (2, 3), (2, 4), (2, 5),
+(3, 6), (3, 7), (3, 8), (3, 9), (3, 10),
+(4, 6), (4, 7), (4, 8), (4, 9), (4, 10),
+(5, 1), (5, 2), (5, 3), (5, 4), (5, 5),
+(6, 1), (6, 2), (6, 3), (6, 4), (6, 5),
+(7, 6), (7, 7), (7, 8), (7, 9), (7, 10),
+(8, 6), (8, 7), (8, 8), (8, 9), (8, 10),
+(9, 1), (9, 2), (9, 3), (9, 4), (9, 5),
+(10, 1), (10, 2), (10, 3), (10, 4), (10, 5);
